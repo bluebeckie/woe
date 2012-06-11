@@ -121,8 +121,9 @@ var markermap = {};
                     }
                 }
             });
+        } else {
+            createLayer();
         }
-       
        
     };
    
