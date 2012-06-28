@@ -108,6 +108,7 @@ var markermap = {};
             var geoquery = encodeURIComponent('select latitude, longitude from geo.placefinder where text in (' + tplaces.join(',') + ')');
             $.ajax({
                 url: 'http://query.yahooapis.com/v1/public/yql?format=json&q=' + geoquery,
+				type: 'POST',
                 complete: function(xhr, status) {
                     if (status === 'error' || !xhr.responseText) {
                         handleError();
