@@ -253,7 +253,7 @@ var markermap = {};
         var marker = new google.maps.Marker({
               position: myLatLng,
               map: map,
-              title:"You Are Here"
+              title: "You Are Here"
         });
        
         var content = '<em>You Are Here</em>';
@@ -271,8 +271,10 @@ var markermap = {};
         });
        
         var classname = 'list0';
-        var grandchild = $(document.createElement('em'))
-            .css({
+        var grandchild = $(document.createElement('a'))
+            .attr({
+                'href':'#',
+            }).css({
                 'background':'#eee',
                 'display':'block',
                 'font-weight':'bold',
@@ -300,8 +302,7 @@ var markermap = {};
             var classname = 'list'+(i+1);
             var grandchild = $(document.createElement('a'))
                 .attr({
-                        'href': 'http://news.search.yahoo.com/search?p=' + item.text ,
-                        'target':'_blank',
+                        'href':'#',
                         'data-woeid': item.woeid
                 }).css({
                     'background':'#eee',
@@ -310,14 +311,14 @@ var markermap = {};
                     'margin':'3px 0',
                     'padding':'0 5px'
                 }).text( item.text );
-
+            
             var child = $(document.createElement('li')).attr({'class': classname }).append( grandchild );
             list.append( child );
        
             bounds.extend(myLatLng);
             map.fitBounds(bounds);
      
-            var content = '<em>' + item.text + '</em>';
+            var content = '<a href="http://news.search.yahoo.com/search?p=' + item.text + '" target="_blank">' + item.text + '</a>';
             markermap[classname] = {'marker': marker, 'content': content} ;
             bindPopup(i+1);
         };
@@ -330,6 +331,13 @@ var markermap = {};
             $('#woe-overlay').hide();
         });
 
+        list.delegate('li','click',function(e){
+            e.preventDefault();
+            var key = $(this).attr('class');
+            infoWindow.setContent(markermap[key].content);
+            infoWindow.open(map, markermap[key].marker);
+        });
+        
         function bindPopup(i) {
             google.maps.event.addListener(markermap['list'+i].marker, 'click', function(event) {
                 infoWindow.setContent(markermap['list'+i].content);
