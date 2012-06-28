@@ -40,14 +40,11 @@ var markermap = {};
             return;
         }
 
-        var article = article_node.text();
-        //console.log(article);
-
         var url = window.location.href.split('.html')[0],
             query = encodeURIComponent('select * from contentanalysis.analyze where url="' + url + '.html"');
-       
+
         $.ajax({
-            url: 'http://query.yahooapis.com/v1/public/yql?format=json&q=' + query,
+            url: 'http://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json',
             complete: function(xhr, status) {
                 if (status === 'error' || !xhr.responseText) {
                     handleError();
@@ -68,7 +65,7 @@ var markermap = {};
             return;
         }
         data = $.parseJSON(data);
-       
+
         if (data.query.count !== 0) {
 
             data = data.query.results.entities.entity;
@@ -131,11 +128,19 @@ var markermap = {};
         //console.log(data);
         data = $.parseJSON(data);
         data = data.query.results.Result;
-        for (var i=0,j=data.length;i<j;i++) {
-            var latlon = [data[i].latitude, data[i].longitude];
-            aplaces[i].lat = data[i].latitude;
-            aplaces[i].lon = data[i].longitude;
+        
+        if (typeof data.length !== 'undefined') {
+            
+            for (var i=0,j=data.length;i<j;i++) {
+                aplaces[i].lat = data[i].latitude;
+                aplaces[i].lon = data[i].longitude;
+            }
+            
+        } else {
+            aplaces[0].lat = data.latitude;
+            aplaces[0].lon = data.longitude;
         }
+        
         //console.log(aplaces);
         createLayer();
     }
